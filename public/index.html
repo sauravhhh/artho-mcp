@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Artho MCP — Assamese Dictionary Test Dashboard</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,Arial,sans-serif;background:#faf6ee;color:#141414;line-height:1.5}
+.wrap{max-width:720px;margin:0 auto;padding:16px}
+h1{font-size:28px;margin:8px 0}h2{font-size:20px}
+.notice{background:#fff3cd;border:1px solid #fdc010;border-radius:12px;padding:12px;font-weight:600}
+.card{background:#fff;border:1px solid #e8dfcc;border-radius:16px;padding:16px;margin:14px 0}
+label{display:block;font-weight:700;margin:10px 0 4px}
+input,select,textarea{width:100%;padding:12px;border:1px solid #ddd;border-radius:12px;font:inherit;font-size:16px}
+button{background:#fdc010;border:0;border-radius:999px;padding:12px 22px;font-weight:800;cursor:pointer;width:100%;margin-top:12px}
+pre{white-space:pre-wrap;word-break:break-word;background:#111;color:#b6ffb0;border-radius:12px;padding:14px;overflow:auto}
+.small{color:#666;font-size:14px}
+</style>
+</head>
+<body><div class="wrap">
+<h1>📖 Artho MCP</h1>
+<p>Assamese Dictionary MCP server — test it from your phone or desktop. No sign-in, no paid API.</p>
+<div class="notice">⚠️ DEMO DATA: the bundled dataset is a small sample only (20 words), for testing — not a complete dictionary.</div>
+
+<div class="card">
+<h2>1. Lookup</h2>
+<label>Direction</label>
+<select id="dir"><option value="lookup_assamese_to_english">Assamese → English</option><option value="lookup_english_to_assamese">English → Assamese</option></select>
+<label>Word</label>
+<input id="word" value="ঘৰ" placeholder="e.g. ঘৰ or house">
+<button onclick="callTool('lookup')">Look up</button>
+</div>
+
+<div class="card">
+<h2>2. Partial search</h2>
+<label>Search text</label><input id="q" value="ঘ" placeholder="e.g. ঘ">
+<label>Direction</label>
+<select id="sdir"><option value="both">Both</option><option value="assamese">Assamese</option><option value="english">English</option></select>
+<button onclick="callTool('search')">Search</button>
+</div>
+
+<div class="card">
+<h2>3. Dictionary info</h2>
+<button onclick="callTool('info')">Show info</button>
+</div>
+
+<div class="card">
+<h2>4. Import (CSV / JSON)</h2>
+<p class="small">CSV header: assamese,english,meanings (meanings separated by |). JSON: array of {assamese, english, meanings}. Stored in memory for this server process only.</p>
+<label>Format</label><select id="fmt"><option value="csv">CSV</option><option value="json">JSON</option></select>
+<label>Data</label><textarea id="data" rows="4">assamese,english,meanings
+বিদ্যা,knowledge,knowledge|learning</textarea>
+<button onclick="callTool('import')">Import</button>
+</div>
+
+<h2>Result</h2>
+<pre id="out">Tap a button above to test the MCP server.</pre>
+<p class="small">Endpoint: <code>POST /mcp</code> (Streamable HTTP, JSON-RPC). Works with MCP Inspector — see README.md.</p>
+</div>
+<script>
+let id = 1;
+async function rpc(method, params) {
+  const r = await fetch('/mcp', {method:'POST', headers:{'Content-Type':'application/json','Accept':'application/json, text/event-stream'}, body: JSON.stringify({jsonrpc:'2.0', id: id++, method, params})});
+  const t = await r.text();
+  // Stateless JSON responses come back as plain JSON; SSE responses are also handled by taking the data: line.
+  const line = t.split('\n').find(l => l.startsWith('data:'));
+  return line ? JSON.parse(line.slice(5)) : JSON.parse(t);
+}
+async function callTool(kind) {
+  const out = document.getElementById('out');
+  out.textContent = 'Working…';
+  try {
+    await rpc('initialize', {protocolVersion:'2024-11-05', capabilities:{}, clientInfo:{name:'artho-dashboard', version:'1.0'}});
+    let tool, args;
+    if (kind === 'lookup') { tool = document.getElementById('dir').value; args = {word: document.getElementById('word').value.trim()}; }
+    if (kind === 'search') { tool = 'search_dictionary'; args = {query: document.getElementById('q').value.trim(), direction: document.getElementById('sdir').value, limit: 20}; }
+    if (kind === 'info') { tool = 'dictionary_info'; args = {}; }
+    if (kind === 'import') { tool = 'import_dictionary_data'; args = {format: document.getElementById('fmt').value, data: document.getElementById('data').value}; }
+    const res = await rpc('tools/call', {name: tool, arguments: args});
+    out.textContent = JSON.stringify(res, null, 2);
+  } catch (e) { out.textContent = 'Error: ' + e.message; }
+}
+</script>
+</body></html>
