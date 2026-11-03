@@ -20,7 +20,7 @@ pre{white-space:pre-wrap;word-break:break-word;background:#111;color:#b6ffb0;bor
 <body><div class="wrap">
 <h1>📖 Artho MCP</h1>
 <p>Assamese Dictionary MCP server — test it from your phone or desktop. No sign-in, no paid API.</p>
-<div class="notice">⚠️ DEMO DATA: the bundled dataset is a small sample only (20 words), for testing — not a complete dictionary.</div>
+<div class="notice">✅ REAL DATA: lookups use Saurabh's live Artho dictionary (arthoo.vercel.app/api). A small demo dataset is used only if that API is down.</div>
 
 <div class="card">
 <h2>1. Lookup</h2>
@@ -46,7 +46,7 @@ pre{white-space:pre-wrap;word-break:break-word;background:#111;color:#b6ffb0;bor
 
 <div class="card">
 <h2>4. Import (CSV / JSON)</h2>
-<p class="small">CSV header: assamese,english,meanings (meanings separated by |). JSON: array of {assamese, english, meanings}. Stored in memory for this server process only.</p>
+<p class="small">CSV header: assamese,english,meanings (meanings separated by |). JSON: array of {assamese, english, meanings}. Stored in this server's local store only — it does not change the real Artho dictionary.</p>
 <label>Format</label><select id="fmt"><option value="csv">CSV</option><option value="json">JSON</option></select>
 <label>Data</label><textarea id="data" rows="4">assamese,english,meanings
 বিদ্যা,knowledge,knowledge|learning</textarea>
