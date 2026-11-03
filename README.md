@@ -1,5 +1,11 @@
 # Artho MCP — Assamese Dictionary MCP Server
 
+**Live (Vercel, on the connected account):**
+- Dashboard: https://artho-mcp.vercel.app/
+- MCP endpoint (Streamable HTTP, for MCP Inspector / clients): https://artho-mcp.vercel.app/api/mcp
+- Code: https://github.com/sauravhhh/artho-mcp
+- Note: on Vercel serverless, imports do not persist across invocations — the demo dataset always works.
+
 A complete, working MCP server for Assamese ↔ English dictionary lookup.
 Built with **TypeScript** and the **official MCP SDK** (`@modelcontextprotocol/sdk` v1.32),
 using the **remote Streamable HTTP transport at `/mcp`**.
