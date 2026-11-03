@@ -1,0 +1,6 @@
+# Cloudflare Workers — free tier compatible. No paid APIs, no secrets needed.
+name = "artho-mcp"
+main = "dist/worker.js"
+compatibility_date = "2025-01-01"
+# Workers run the bundled worker entry; build it with: npm run build:worker
+# (tsc outputs dist/worker.js; wrangler bundles its imports.)
