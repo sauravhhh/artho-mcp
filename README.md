@@ -10,9 +10,8 @@ A complete, working MCP server for Assamese ↔ English dictionary lookup.
 Built with **TypeScript** and the **official MCP SDK** (`@modelcontextprotocol/sdk` v1.32),
 using the **remote Streamable HTTP transport at `/mcp`**.
 
-> ⚠️ **DEMO DATA:** the bundled dataset is a small hand-written sample (20 words).
-> It is clearly labelled in every tool response. It is **not** a complete dictionary.
-> Replace it with a licensed/complete dataset before production use.
+> **REAL DATA:** lookups now use Saurabh's live Artho dictionary API (https://arthoo.vercel.app/api).
+> A small demo dataset is kept only as a fallback if that API is unreachable, and responses say so.
 
 **Free tier only. No paid APIs, no API keys, no sign-in.**
 
